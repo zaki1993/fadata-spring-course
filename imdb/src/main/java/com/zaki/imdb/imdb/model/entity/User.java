@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
@@ -26,8 +27,12 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class User implements UserDetails {
+
+    private static final UserRole DEFAULT_USER_ROLE = UserRole.ANONYMOUS;
+
+    private static final String DEFAULT_USER_IMAGE = "https://www.knowmuhammad.org/img/noavatarn.png";
+
     @Id
     @GeneratedValue(generator = "users_sequence", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
@@ -68,14 +73,12 @@ public class User implements UserDetails {
 
     @NotNull
     @NonNull
-    private UserRole role = UserRole.ANONYMOUS;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<UserRole> roles = Set.of(DEFAULT_USER_ROLE);
 
     @URL
-    @Basic(optional = true)
     @Column(name = "USER_IMAGE_URL")
-
-    // TODO use some default image if the user did not provide such
-    private String userImageUrl;
+    private String userImageUrl = DEFAULT_USER_IMAGE;
 
     @PastOrPresent
     private LocalDateTime created = LocalDateTime.now();
@@ -87,19 +90,19 @@ public class User implements UserDetails {
     @ToString.Exclude
     List<Comment> userComments = new ArrayList<>();
 
-    public User(@NonNull @NotNull @Size(min = 2, max = 50) String firstName, @NonNull @NotNull @Size(min = 2, max = 50) String lastName, @NonNull @NotNull @Email String email, @NonNull @NotNull @Size(min = 5, max = 30) String username, @NonNull @NotNull @Size(min = 5, max = 30) String password, UserRole role, @URL String userImageUrl) {
+    public User(@NonNull @NotNull @Size(min = 2, max = 50) String firstName, @NonNull @NotNull @Size(min = 2, max = 50) String lastName, @NonNull @NotNull @Email String email, @NonNull @NotNull @Size(min = 5, max = 30) String username, @NonNull @NotNull @Size(min = 5, max = 30) String password, Set<UserRole> roles, @URL String userImageUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
         this.userImageUrl = userImageUrl;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(new SimpleGrantedAuthority(role.getAsString()));
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAsString())).collect(Collectors.toList());
     }
 
     @Override

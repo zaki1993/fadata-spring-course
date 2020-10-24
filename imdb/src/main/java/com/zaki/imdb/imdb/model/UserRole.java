@@ -1,9 +1,15 @@
 package com.zaki.imdb.imdb.model;
 
 public enum UserRole {
-    ANONYMOUS, REGISTERED, MODERATOR, ADMINISTRATOR;
+    ANONYMOUS("ANONYMOUS"), REGISTERED("REGISTERED"), MODERATOR("MODERATOR"), ADMINISTRATOR("ADMINISTRATOR");
+
+    UserRole(String role) {
+        this.role = role;
+    }
+
+    private String role;
 
     public String getAsString() {
-        return "ROLE_" + name();
+        return "ROLE_" + role;
     }
 }

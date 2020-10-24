@@ -1,7 +1,9 @@
 package com.zaki.imdb.imdb.exception;
 
-public class EntityAlreadyExistsException extends RuntimeException {
+import com.zaki.imdb.imdb.exception.base.BaseIMDBException;
+
+public class EntityAlreadyExistsException extends BaseIMDBException {
     public EntityAlreadyExistsException(String msg) {
-        super(msg);
+        super(msg, 400);
     }
 }

@@ -1,7 +1,9 @@
 package com.zaki.imdb.imdb.exception;
 
-public class NonExistingEntityException extends RuntimeException {
+import com.zaki.imdb.imdb.exception.base.BaseIMDBException;
+
+public class NonExistingEntityException extends BaseIMDBException {
     public NonExistingEntityException(String msg) {
-        super(msg);
+        super(msg, 404);
     }
 }

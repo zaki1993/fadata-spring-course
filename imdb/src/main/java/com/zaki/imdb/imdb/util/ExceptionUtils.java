@@ -1,10 +1,9 @@
 package com.zaki.imdb.imdb.util;
 
-import com.zaki.imdb.imdb.exception.EntityAlreadyExistsException;
-import com.zaki.imdb.imdb.exception.InvalidEntityDataException;
-import com.zaki.imdb.imdb.exception.NonExistingEntityException;
-import com.zaki.imdb.imdb.exception.ResourceEntityDataException;
+import com.zaki.imdb.imdb.exception.*;
 import com.zaki.imdb.imdb.service.EntityService;
+
+import javax.validation.ConstraintViolationException;
 
 public final class ExceptionUtils {
     public static NonExistingEntityException newNonExistingEntityExceptionFromService(EntityService service, String columnName, Object value) {
@@ -27,5 +26,30 @@ public final class ExceptionUtils {
     }
 
     public static void handleConstraintViolationException(RuntimeException e) {
+    }
+
+    public static void hanleConstraintViolationException(RuntimeException e) throws RuntimeException {
+        ValidationErrorsException ex = extractConstraintViolationException(e);
+        if (ex != null) {
+            throw ex;
+        } else {
+            throw e;
+        }
+    }
+
+    public static ValidationErrorsException extractConstraintViolationException(RuntimeException e) throws RuntimeException {
+        if (e instanceof ValidationErrorsException) {
+            return (ValidationErrorsException) e;
+        }
+        Throwable ex = e;
+        while (ex.getCause() != null && !(ex instanceof ConstraintViolationException)) {
+            ex = ex.getCause();
+        }
+        if (ex instanceof ConstraintViolationException) {
+            ConstraintViolationException cvex = (ConstraintViolationException) ex;
+            return new ValidationErrorsException(cvex.getConstraintViolations());
+        } else {
+            return null;
+        }
     }
 }

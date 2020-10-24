@@ -1,8 +1,10 @@
 package com.zaki.imdb.imdb.exception;
 
-public class ResourceEntityDataException extends RuntimeException {
+import com.zaki.imdb.imdb.exception.base.BaseIMDBException;
+
+public class ResourceEntityDataException extends BaseIMDBException {
 
     public ResourceEntityDataException(String msg) {
-        super(msg);
+        super(msg, 400);
     }
 }

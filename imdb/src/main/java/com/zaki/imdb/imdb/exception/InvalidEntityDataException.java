@@ -1,7 +1,9 @@
 package com.zaki.imdb.imdb.exception;
 
-public class InvalidEntityDataException extends RuntimeException {
+import com.zaki.imdb.imdb.exception.base.BaseIMDBException;
+
+public class InvalidEntityDataException extends BaseIMDBException {
     public InvalidEntityDataException(String msg) {
-        super(msg);
+        super(msg, 400);
     }
 }

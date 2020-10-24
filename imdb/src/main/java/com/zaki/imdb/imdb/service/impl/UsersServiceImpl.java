@@ -83,7 +83,7 @@ public class UsersServiceImpl implements UsersService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User result = null;
         try {
-            usersJpaRepository.save(user);
+            result = usersJpaRepository.save(user);
         } catch (RuntimeException e) {
             ExceptionUtils.handleConstraintViolationException(e);
         }
