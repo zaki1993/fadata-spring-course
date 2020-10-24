@@ -4,6 +4,6 @@ public enum UserRole {
     ANONYMOUS, REGISTERED, MODERATOR, ADMINISTRATOR;
 
     public String getAsString() {
-        return name();
+        return "ROLE_" + name();
     }
 }
