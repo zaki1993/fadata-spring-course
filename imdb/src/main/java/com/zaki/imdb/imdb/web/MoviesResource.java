@@ -1,6 +1,8 @@
 package com.zaki.imdb.imdb.web;
 
+import com.zaki.imdb.imdb.model.entity.Comment;
 import com.zaki.imdb.imdb.model.entity.Movie;
+import com.zaki.imdb.imdb.service.CommentsService;
 import com.zaki.imdb.imdb.service.MoviesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 @RestController
 @RequestMapping("/imdb/movie")
 public class MoviesResource {
+
+    @Autowired
+    private CommentsService commentsService;
 
     @Autowired
     private MoviesService moviesService;
@@ -59,9 +64,20 @@ public class MoviesResource {
     }
 
     @DeleteMapping("{id}")
-    public Movie deleteMovie(@PathVariable long id) {
+    public Movie deleteMovie(@PathVariable Long id) {
         return moviesService.deleteMovie(id);
     }
+
+    @GetMapping("{id}/comments")
+    public List<Comment> getMovieComments(@PathVariable Long id) {
+        return getMovieById(id).getComments();
+    }
+
+    @GetMapping("{movieId}/comments/{commentId}")
+    public Comment getMovieComment(@PathVariable Long movieId, @PathVariable Long commentId) {
+        return commentsService.getMovieComment(getMovieById(movieId), commentId);
+    }
+
 
     /*
     private UserDTO convertToDto(User user) {

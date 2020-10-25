@@ -81,14 +81,4 @@ public class CategoriesServiceImpl implements CategoriesService {
         categoriesJpaRepository.deleteById(result.getId());
         return result;
     }
-
-    @Override
-    public Movie getMovieFromCategory(String categoryName, Long movieId) {
-        Category category = getCategoryByName(categoryName);
-        Movie movie = moviesService.getMovieById(movieId);
-        if (!movie.getCategory().equals(category)) {
-            throw new ResourceEntityDataException(String.format("Movie %s is not in category %s", movie.getName(), category.getName()));
-        }
-        return movie;
-    }
 }

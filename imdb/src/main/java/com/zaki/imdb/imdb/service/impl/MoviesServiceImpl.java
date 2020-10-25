@@ -1,7 +1,10 @@
 package com.zaki.imdb.imdb.service.impl;
 
 import com.zaki.imdb.imdb.dao.MoviesJpaRepository;
+import com.zaki.imdb.imdb.exception.ResourceEntityDataException;
+import com.zaki.imdb.imdb.model.entity.Category;
 import com.zaki.imdb.imdb.model.entity.Movie;
+import com.zaki.imdb.imdb.service.CommentsService;
 import com.zaki.imdb.imdb.service.MoviesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,9 @@ import static com.zaki.imdb.imdb.util.ExceptionUtils.newNonExistingEntityExcepti
 @Transactional(propagation = Propagation.REQUIRED)
 @Slf4j
 public class MoviesServiceImpl implements MoviesService {
+
+    @Autowired
+    private CommentsService commentsService;
 
     @Autowired
     private MoviesJpaRepository moviesJpaRepository;
@@ -66,5 +72,14 @@ public class MoviesServiceImpl implements MoviesService {
     @Override
     public List<Movie> getAllMovies() {
         return moviesJpaRepository.findAll();
+    }
+
+    @Override
+    public Movie getMovieFromCategory(Category category, Long movieId) {
+        Movie movie = getMovieById(movieId);
+        if (!movie.getCategory().equals(category)) {
+            throw new ResourceEntityDataException(String.format("Movie %s is not in category %s", movie.getName(), category.getName()));
+        }
+        return movie;
     }
 }

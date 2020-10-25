@@ -20,6 +20,4 @@ public interface CategoriesService extends EntityService {
     default String getEntityName() {
         return "Category";
     }
-
-    Movie getMovieFromCategory(String categoryName, Long movieId);
 }

@@ -3,6 +3,7 @@ package com.zaki.imdb.imdb.web;
 import com.zaki.imdb.imdb.model.entity.Category;
 import com.zaki.imdb.imdb.model.entity.Movie;
 import com.zaki.imdb.imdb.service.CategoriesService;
+import com.zaki.imdb.imdb.service.MoviesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,10 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 @RestController
 @RequestMapping("/imdb/category")
 public class CategoriesResource {
+
+    @Autowired
+    private MoviesService moviesService;
+
     @Autowired
     private CategoriesService categoriesService;
 
@@ -45,7 +50,7 @@ public class CategoriesResource {
 
     @GetMapping("{name}/movies/{id}")
     public Movie getMovieInCategory(@PathVariable String name, @PathVariable Long id) {
-        return categoriesService.getMovieFromCategory(name, id);
+        return moviesService.getMovieFromCategory(getCategoryByName(name), id);
     }
 
     @PostMapping
