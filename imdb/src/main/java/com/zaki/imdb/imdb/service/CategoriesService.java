@@ -8,20 +8,18 @@ import java.util.List;
 public interface CategoriesService extends EntityService {
     List<Category> getAllCategories();
 
-    Category getCategoryById(Long id);
-
     Category getCategoryByName(String name);
 
     Category createCategory(Category category);
 
     Category updateCategory(Category category);
 
-    Category deleteCategory(Long id);
+    Category deleteCategory(String name);
 
     @Override
     default String getEntityName() {
         return "Category";
     }
 
-    Movie getCategoryMovie(Category category, Movie movie);
+    Movie getMovieFromCategory(String categoryName, Long movieId);
 }

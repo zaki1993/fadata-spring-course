@@ -20,10 +20,6 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 @RestController
 @RequestMapping("/imdb/category")
 public class CategoriesResource {
-
-    @Autowired
-    private  MoviesResource moviesResource;
-
     @Autowired
     private CategoriesService categoriesService;
 
@@ -37,24 +33,19 @@ public class CategoriesResource {
         return categoriesService.getAllCategories();
     }
 
-    @GetMapping("{categoryId}")
-    public Category getCategoryById(@PathVariable long categoryId) {
-        return categoriesService.getCategoryById(categoryId);
+    @GetMapping("{name}")
+    public Category getCategoryByName(@PathVariable String name) {
+        return categoriesService.getCategoryByName(name);
     }
 
-    @GetMapping("{categoryName}")
-    public Category getCategoryByName(@PathVariable String categoryName) {
-        return categoriesService.getCategoryByName(categoryName);
+    @GetMapping("{name}/movies")
+    public List<Movie> getAllMoviesInCategory(@PathVariable String name) {
+        return getCategoryByName(name).getMovies();
     }
 
-    @GetMapping("{categoryName}/movie")
-    public List<Movie> getAllMoviesInCategory(@PathVariable String categoryName) {
-        return getCategoryByName(categoryName).getMovies();
-    }
-
-    @GetMapping("{categoryName}/movie/{movieId}")
-    public Movie getMovieInCategory(@PathVariable String categoryName, @PathVariable Long movieId) {
-        return categoriesService.getCategoryMovie(getCategoryByName(categoryName), moviesResource.getMovieById(movieId));
+    @GetMapping("{name}/movies/{id}")
+    public Movie getMovieInCategory(@PathVariable String name, @PathVariable Long id) {
+        return categoriesService.getMovieFromCategory(name, id);
     }
 
     @PostMapping
@@ -72,9 +63,9 @@ public class CategoriesResource {
         return categoriesService.updateCategory(category);
     }
 
-    @DeleteMapping("{id}")
-    public Category deleteCategory(@PathVariable long id) {
-        return categoriesService.deleteCategory(id);
+    @DeleteMapping("{name}")
+    public Category deleteCategory(@PathVariable String name) {
+        return categoriesService.deleteCategory(name);
     }
     /*
     private UserDTO convertToDto(User user) {

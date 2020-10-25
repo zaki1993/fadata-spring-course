@@ -9,6 +9,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -52,8 +53,8 @@ public class Movie {
     private LocalDateTime modified = LocalDateTime.now();
 
     @PositiveOrZero
-    private Double rating;
+    private Double rating = 0d;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 }

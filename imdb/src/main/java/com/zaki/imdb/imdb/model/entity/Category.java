@@ -1,5 +1,6 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -14,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonIgnoreProperties({"movies"})
 public class Category {
 
     @Id
@@ -31,6 +34,20 @@ public class Category {
     @Size(min = 16, max = 1024)
     private String description;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Movie.class, mappedBy = "category", fetch = FetchType.LAZY)
     private List<Movie> movies = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return id.equals(category.id) &&
+                name.equals(category.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 }
