@@ -49,12 +49,7 @@ public class UsersResource {
 
     @PutMapping("{id}")
     public User updateUser(@PathVariable Long id, @Valid @RequestBody User user, Errors errors) {
-        if (errors.hasErrors()) {
-            throw new ValidationErrorsException(errors);
-        }
-        if (!id.equals(user.getId())) {
-            throw ExceptionUtils.newResourceEntityDataException("id", id, user.getId());
-        }
+        ExceptionUtils.onResourceEntryValidation(errors, id, user.getId());
         return usersService.updateUser(user);
     }
 

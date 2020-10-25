@@ -1,8 +1,5 @@
 package com.zaki.imdb.imdb.web.advice;
 
-import com.zaki.imdb.imdb.exception.InvalidEntityDataException;
-import com.zaki.imdb.imdb.exception.NonExistingEntityException;
-import com.zaki.imdb.imdb.exception.ResourceEntityDataException;
 import com.zaki.imdb.imdb.exception.ValidationErrorsException;
 import com.zaki.imdb.imdb.exception.base.BaseIMDBException;
 import com.zaki.imdb.imdb.model.ErrorResponse;

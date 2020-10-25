@@ -1,5 +1,6 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import com.zaki.imdb.imdb.model.UserRole;
@@ -27,6 +28,7 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"userComments", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
 public class User implements UserDetails {
 
     private static final UserRole DEFAULT_USER_ROLE = UserRole.ANONYMOUS;

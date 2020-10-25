@@ -2,6 +2,7 @@ package com.zaki.imdb.imdb.util;
 
 import com.zaki.imdb.imdb.exception.*;
 import com.zaki.imdb.imdb.service.EntityService;
+import org.springframework.validation.Errors;
 
 import javax.validation.ConstraintViolationException;
 
@@ -25,10 +26,7 @@ public final class ExceptionUtils {
         throw new ResourceEntityDataException(String.format("Url %s:%d differs from body entity %s:%d", entityFragment, urlFragmentValue, entityFragment, bodyFragmentValue));
     }
 
-    public static void handleConstraintViolationException(RuntimeException e) {
-    }
-
-    public static void hanleConstraintViolationException(RuntimeException e) throws RuntimeException {
+    public static void handleConstraintViolationException(RuntimeException e) throws RuntimeException {
         ValidationErrorsException ex = extractConstraintViolationException(e);
         if (ex != null) {
             throw ex;
@@ -50,6 +48,15 @@ public final class ExceptionUtils {
             return new ValidationErrorsException(cvex.getConstraintViolations());
         } else {
             return null;
+        }
+    }
+
+    public static void onResourceEntryValidation(Errors errors, Long urlId, Long bodyId) {
+        if (errors.hasErrors()) {
+            throw new ValidationErrorsException(errors);
+        }
+        if (!urlId.equals(bodyId)) {
+            throw ExceptionUtils.newResourceEntityDataException("id", urlId, bodyId);
         }
     }
 }

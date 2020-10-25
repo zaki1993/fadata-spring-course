@@ -5,11 +5,12 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
-@Table(name="categories")
+@Table(name = "categories")
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -22,14 +23,14 @@ public class Category {
 
     @NonNull
     @NotNull
-    @Size(min=2, max=128)
+    @Size(min = 2, max = 128)
     private String name;
 
     @NonNull
     @NotNull
-    @Size(min=16, max=1024)
+    @Size(min = 16, max = 1024)
     private String description;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Movie> movies;
+    private List<Movie> movies = new ArrayList<>();
 }
