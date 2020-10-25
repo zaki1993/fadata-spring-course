@@ -10,17 +10,17 @@ import java.util.List;
 public interface UsersService extends EntityService {
     List<User> getAllUsers();
 
-    User getUserById(Long id) throws NonExistingEntityException;
+    User getUserById(Long id);
 
-    User getUserByUsername(String username) throws NonExistingEntityException;
+    User getUserByUsername(String username);
 
-    User getUserByEmail(String email) throws NonExistingEntityException;
+    User getUserByEmail(String email);
 
-    User createUser(User user) throws InvalidEntityDataException, EntityAlreadyExistsException;
+    User createUser(User user);
 
-    User updateUser(User user) throws NonExistingEntityException, InvalidEntityDataException;
+    User updateUser(User user);
 
-    User deleteUser(Long id) throws NonExistingEntityException;
+    User deleteUser(Long id);
 
     @Override
     default String getEntityName() {

@@ -19,7 +19,7 @@ public final class ExceptionUtils {
 
     public static InvalidEntityDataException newInvalidEntityDataExceptionFromService(EntityService service, String columnName, Object value) {
         value = value == null ? "" : value;
-        return new InvalidEntityDataException(String.format("%s %s='%s' can not be modified", service.getEntityName(), columnName, value.toString()));
+        return new InvalidEntityDataException(String.format("%s property %s='%s' can not be modified", service.getEntityName(), columnName, value.toString()));
     }
 
     public static ResourceEntityDataException newResourceEntityDataException(String entityFragment, Long urlFragmentValue, Long bodyFragmentValue) {

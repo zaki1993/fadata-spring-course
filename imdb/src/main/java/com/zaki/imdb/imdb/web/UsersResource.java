@@ -1,6 +1,5 @@
 package com.zaki.imdb.imdb.web;
 
-import com.zaki.imdb.imdb.exception.ValidationErrorsException;
 import com.zaki.imdb.imdb.model.entity.User;
 import com.zaki.imdb.imdb.service.UsersService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;

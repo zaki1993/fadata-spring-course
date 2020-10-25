@@ -1,6 +1,7 @@
 package com.zaki.imdb.imdb.web;
 
 import com.zaki.imdb.imdb.model.entity.Category;
+import com.zaki.imdb.imdb.model.entity.Movie;
 import com.zaki.imdb.imdb.service.CategoriesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 @RestController
 @RequestMapping("/imdb/category")
 public class CategoriesResource {
+
+    @Autowired
+    private  MoviesResource moviesResource;
+
     @Autowired
     private CategoriesService categoriesService;
 
@@ -32,14 +37,24 @@ public class CategoriesResource {
         return categoriesService.getAllCategories();
     }
 
-    @GetMapping("{id}")
-    public Category getCategoryById(@PathVariable long id) {
-        return categoriesService.getCategoryById(id);
+    @GetMapping("{categoryId}")
+    public Category getCategoryById(@PathVariable long categoryId) {
+        return categoriesService.getCategoryById(categoryId);
     }
 
-    @GetMapping("{name}")
-    public Category getCategoryById(@PathVariable String name) {
-        return categoriesService.getCategoryByName(name);
+    @GetMapping("{categoryName}")
+    public Category getCategoryByName(@PathVariable String categoryName) {
+        return categoriesService.getCategoryByName(categoryName);
+    }
+
+    @GetMapping("{categoryName}/movie")
+    public List<Movie> getAllMoviesInCategory(@PathVariable String categoryName) {
+        return getCategoryByName(categoryName).getMovies();
+    }
+
+    @GetMapping("{categoryName}/movie/{movieId}")
+    public Movie getMovieInCategory(@PathVariable String categoryName, @PathVariable Long movieId) {
+        return categoriesService.getCategoryMovie(getCategoryByName(categoryName), moviesResource.getMovieById(movieId));
     }
 
     @PostMapping

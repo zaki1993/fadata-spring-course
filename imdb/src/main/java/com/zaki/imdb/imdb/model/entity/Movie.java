@@ -33,7 +33,7 @@ public class Movie {
     @NotNull
     @NonNull
     @Size(min = 8, max = 128)
-    private String title;
+    private String name;
 
     @NotNull
     @NonNull
