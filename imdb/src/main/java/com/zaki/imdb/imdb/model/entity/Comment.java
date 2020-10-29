@@ -1,5 +1,6 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonIgnoreProperties({"approved"})
 public class Comment {
 
     @Id
@@ -21,16 +23,14 @@ public class Comment {
     @SequenceGenerator(name = "comments_sequence", sequenceName = "comments_sequence", allocationSize = 3)
     private Long id;
 
-    @NotNull
-    @NonNull
-    @ManyToOne(targetEntity = Movie.class, optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Movie.class, optional = false)
     @JoinColumn(name = "MOVIE_ID", nullable = false, updatable = false, referencedColumnName = "ID")
+    @NonNull
     private Movie movie;
 
-    @NotNull
-    @NonNull
     @ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "AUTHOR_ID", nullable = false, updatable = false, referencedColumnName = "ID")
+    @NonNull
     private User author;
 
     @NotNull
@@ -38,9 +38,11 @@ public class Comment {
     @Size(min = 10, max = 2048)
     private String content;
 
-    @PastOrPresent
-    private LocalDateTime created;
+    private boolean approved = false;
 
     @PastOrPresent
-    private LocalDateTime modified;
+    private LocalDateTime created = LocalDateTime.now();
+
+    @PastOrPresent
+    private LocalDateTime modified = LocalDateTime.now();
 }

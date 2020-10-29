@@ -16,14 +16,14 @@ import java.util.List;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
-@RestController
+@RestController("userResource")
 @RequestMapping("/imdb/users")
 public class UsersResource {
     @Autowired
     private UsersService usersService;
 
     @Autowired
-    ModelMapper mapper;
+    private ModelMapper mapper;
 
     // TODO user Model mapper
 
@@ -37,7 +37,7 @@ public class UsersResource {
         return usersService.getUserById(id);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<User> createUser(@RequestBody User user, HttpServletRequest request) {
         User created = usersService.createUser(user);
         return ResponseEntity.created(

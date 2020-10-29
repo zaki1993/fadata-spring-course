@@ -1,5 +1,6 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -9,8 +10,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Entity
@@ -18,18 +18,23 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonIgnoreProperties({"comments"})
 public class Movie {
 
     @Id
-    @GeneratedValue(generator = "movies_sequence", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "movies_sequence", strategy = GenerationType.TABLE)
     @SequenceGenerator(name = "movies_sequence", sequenceName = "movies_sequence", allocationSize = 3)
     private Long id;
 
-    @NotNull
-    @NonNull
-    @ManyToOne(targetEntity = Category.class, optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "CATEGORY_ID", nullable = false, updatable = false, referencedColumnName = "ID")
-    private Category category;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "movies_genres",
+            joinColumns = {@JoinColumn(name = "movie_id")},
+            inverseJoinColumns = {@JoinColumn(name = "genre_id")})
+    private Set<Genre> genres = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "movie", targetEntity = Comment.class)
+    @ToString.Exclude
+    private List<Comment> comments = new ArrayList<>();
 
     @NotNull
     @NonNull
@@ -54,7 +59,23 @@ public class Movie {
 
     @PositiveOrZero
     private Double rating = 0d;
+/*
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id.equals(movie.id) &&
+                name.equals(movie.name) &&
+                description.equals(movie.description) &&
+                trailerURL.equals(movie.trailerURL) &&
+                created.equals(movie.created) &&
+                modified.equals(movie.modified) &&
+                rating.equals(movie.rating);
+    }
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Comment> comments = new ArrayList<>();
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, trailerURL, created, modified, rating);
+    }*/
 }

@@ -2,9 +2,10 @@ package com.zaki.imdb.imdb.service.impl;
 
 import com.zaki.imdb.imdb.dao.MoviesJpaRepository;
 import com.zaki.imdb.imdb.exception.ResourceEntityDataException;
-import com.zaki.imdb.imdb.model.entity.Category;
+import com.zaki.imdb.imdb.model.entity.Genre;
 import com.zaki.imdb.imdb.model.entity.Movie;
 import com.zaki.imdb.imdb.service.CommentsService;
+import com.zaki.imdb.imdb.service.GenresService;
 import com.zaki.imdb.imdb.service.MoviesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,9 @@ public class MoviesServiceImpl implements MoviesService {
     @Autowired
     private MoviesJpaRepository moviesJpaRepository;
 
+    @Autowired
+    private GenresService genresService;
+
     @Override
     public Movie deleteMovie(long id) {
         Movie result = getMovieById(id);
@@ -42,6 +46,9 @@ public class MoviesServiceImpl implements MoviesService {
                 () -> newNonExistingEntityExceptionFromService(this, "id", movie.getId()));
         if (!result.getName().equals(movie.getName())) {
             throw newInvalidEntityDataExceptionFromService(this, "name", result.getName());
+        }
+        if (!result.getCreated().equals(movie.getCreated())) {
+            throw newInvalidEntityDataExceptionFromService(this, "created", result.getCreated());
         }
         return moviesJpaRepository.save(movie);
     }
@@ -60,11 +67,6 @@ public class MoviesServiceImpl implements MoviesService {
     }
 
     @Override
-    public List<Movie> getMovieByName(String name) {
-        return moviesJpaRepository.findByName(name);
-    }
-
-    @Override
     public Movie getMovieById(long id) {
         return moviesJpaRepository.findById(id).orElseThrow(() -> ExceptionUtils.newNonExistingEntityExceptionFromService(this, "id", id));
     }
@@ -72,14 +74,5 @@ public class MoviesServiceImpl implements MoviesService {
     @Override
     public List<Movie> getAllMovies() {
         return moviesJpaRepository.findAll();
-    }
-
-    @Override
-    public Movie getMovieFromCategory(Category category, Long movieId) {
-        Movie movie = getMovieById(movieId);
-        if (!movie.getCategory().equals(category)) {
-            throw new ResourceEntityDataException(String.format("Movie %s is not in category %s", movie.getName(), category.getName()));
-        }
-        return movie;
     }
 }

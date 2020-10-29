@@ -1,7 +1,8 @@
 package com.zaki.imdb.imdb.service;
 
 import com.zaki.imdb.imdb.model.entity.Comment;
-import com.zaki.imdb.imdb.model.entity.Movie;
+
+import java.util.List;
 
 public interface CommentsService extends EntityService {
     Comment getCommentById(Long commentId);
@@ -11,5 +12,11 @@ public interface CommentsService extends EntityService {
         return "Comment";
     }
 
-    Comment getMovieComment(Movie movie, Long commentId);
+    Comment updateComment(Comment comment, boolean canBeApproved);
+
+    Comment deleteComment(Long commentId);
+
+    List<Comment> getUnapprovedComments();
+
+    Comment createComment(Comment comment);
 }

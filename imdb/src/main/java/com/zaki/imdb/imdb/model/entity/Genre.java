@@ -6,22 +6,22 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "categories")
+@Table(name = "genres")
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
 @JsonIgnoreProperties({"movies"})
-public class Category {
+public class Genre {
 
     @Id
-    @GeneratedValue(generator = "categories_sequence", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "categories_sequence", sequenceName = "categories_sequence", allocationSize = 3)
+    @GeneratedValue(generator = "genres_sequence", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "genres_sequence", sequenceName = "genres_sequence", allocationSize = 3)
     private Long id;
 
     @NonNull
@@ -34,16 +34,16 @@ public class Category {
     @Size(min = 16, max = 1024)
     private String description;
 
-    @OneToMany(targetEntity = Movie.class, mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Movie> movies = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "genres")
+    private Set<Movie> movies = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return id.equals(category.id) &&
-                name.equals(category.name);
+        Genre genre = (Genre) o;
+        return id.equals(genre.id) &&
+                name.equals(genre.name);
     }
 
     @Override

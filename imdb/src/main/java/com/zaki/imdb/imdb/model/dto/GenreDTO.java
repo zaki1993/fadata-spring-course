@@ -1,4 +1,4 @@
 package com.zaki.imdb.imdb.model.dto;
 
-public class RateDTO {
+public class GenreDTO {
 }

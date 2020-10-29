@@ -1,6 +1,9 @@
 package com.zaki.imdb.imdb.util;
 
 import com.zaki.imdb.imdb.exception.*;
+import com.zaki.imdb.imdb.model.entity.Comment;
+import com.zaki.imdb.imdb.model.entity.Genre;
+import com.zaki.imdb.imdb.model.entity.Movie;
 import com.zaki.imdb.imdb.service.EntityService;
 import org.springframework.validation.Errors;
 
@@ -52,11 +55,31 @@ public final class ExceptionUtils {
     }
 
     public static void onResourceEntryValidation(Errors errors, Long urlId, Long bodyId) {
-        if (errors.hasErrors()) {
+        if (errors != null && errors.hasErrors()) {
             throw new ValidationErrorsException(errors);
         }
         if (!urlId.equals(bodyId)) {
-            throw ExceptionUtils.newResourceEntityDataException("id", urlId, bodyId);
+            throw newResourceEntityDataException("id", urlId, bodyId);
+        }
+    }
+
+    public static void onResourceEntryMovieCommentValidation(Errors errors, Movie movie, Comment comment) {
+        if (errors != null && errors.hasErrors()) {
+            throw new ValidationErrorsException(errors);
+        }
+        if (!movie.equals(comment.getMovie())) {
+            throw new ResourceEntityDataException(String.format("Movie with id=%d does not have comment with id=%d", movie.getId(), comment.getId()));
+        }
+    }
+
+    public static void onResourceEntryGenreMovieValidation(Errors errors, Genre genre, Movie movie) {
+        if (errors != null && errors.hasErrors()) {
+            throw new ValidationErrorsException(errors);
+        }
+        for (Genre movieGenre : movie.getGenres()) {
+            if (!genre.equals(movieGenre)) {
+                throw new ResourceEntityDataException(String.format("Genre with name=%s does not have movie with id=%d", genre.getName(), movie.getId()));
+            }
         }
     }
 }

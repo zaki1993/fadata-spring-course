@@ -2,7 +2,6 @@ package com.zaki.imdb.imdb.web;
 
 import com.zaki.imdb.imdb.model.entity.Comment;
 import com.zaki.imdb.imdb.model.entity.Movie;
-import com.zaki.imdb.imdb.service.CommentsService;
 import com.zaki.imdb.imdb.service.MoviesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +14,18 @@ import springfox.documentation.swagger2.mappers.ModelMapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
-@RestController
-@RequestMapping("/imdb/movie")
+@RestController("movieResource")
+@RequestMapping("/imdb/movies")
 public class MoviesResource {
+/*
 
     @Autowired
     private CommentsService commentsService;
+*/
 
     @Autowired
     private MoviesService moviesService;
@@ -41,11 +43,6 @@ public class MoviesResource {
     @GetMapping("{id}")
     public Movie getMovieById(@PathVariable long id) {
         return moviesService.getMovieById(id);
-    }
-
-    @GetMapping("{name}")
-    public List<Movie> getMoviesByName(@PathVariable String name) {
-        return moviesService.getMovieByName(name);
     }
 
     @PostMapping
@@ -68,16 +65,34 @@ public class MoviesResource {
         return moviesService.deleteMovie(id);
     }
 
-    @GetMapping("{id}/comments")
-    public List<Comment> getMovieComments(@PathVariable Long id) {
-        return getMovieById(id).getComments();
+    @GetMapping("{movieId}/comments")
+    public List<Comment> getMovieComments(@PathVariable Long movieId) {
+        return getMovieById(movieId).getComments();
     }
 
+/*
     @GetMapping("{movieId}/comments/{commentId}")
     public Comment getMovieComment(@PathVariable Long movieId, @PathVariable Long commentId) {
-        return commentsService.getMovieComment(getMovieById(movieId), commentId);
+        Movie movie = getMovieById(movieId);
+        Comment comment = commentsService.getCommentById(commentId);
+        ExceptionUtils.onResourceEntryMovieCommentValidation(null, movie, comment);
+        return comment;
     }
 
+    @PutMapping("{movieId}/comments/{commentId}")
+    public Comment updateMovieComment(@PathVariable Long movieId, @PathVariable Long commentId, @Valid @RequestBody Comment comment) {
+        Movie movie = getMovieById(movieId);
+        Comment oldComment = commentsService.getCommentById(commentId);
+        ExceptionUtils.onResourceEntryMovieCommentValidation(null, movie, oldComment);
+        return commentsService.updateComment(comment);
+    }
+
+    @DeleteMapping("{movieId}/comments/{commentId}")
+    public Comment deleteMovieComment(@PathVariable Long movieId, @PathVariable Long commentId) {
+        Movie movie = getMovieById(movieId);
+        return commentsService.deleteComment(commentId);
+    }
+*/
 
     /*
     private UserDTO convertToDto(User user) {
