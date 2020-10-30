@@ -1,13 +1,13 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import com.zaki.imdb.imdb.model.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +28,7 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"userComments", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
+@JsonIgnoreProperties({"comments", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
 public class User implements UserDetails {
 
     private static final UserRole DEFAULT_USER_ROLE = UserRole.ANONYMOUS;
@@ -89,6 +89,8 @@ public class User implements UserDetails {
     private LocalDateTime modified = LocalDateTime.now();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "author", targetEntity = Comment.class)
+    @ToString.Exclude
+    @Fetch(value= FetchMode.SELECT)
     private List<Comment> comments = new ArrayList<>();
 
     public User(@NonNull @NotNull @Size(min = 2, max = 50) String firstName, @NonNull @NotNull @Size(min = 2, max = 50) String lastName, @NonNull @NotNull @Email String email, @NonNull @NotNull @Size(min = 5, max = 30) String username, @NonNull @NotNull @Size(min = 5, max = 30) String password, Set<UserRole> roles, @URL String userImageUrl) {
@@ -125,28 +127,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return active;
     }
-
-/*    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return active == user.active &&
-                id.equals(user.id) &&
-                firstName.equals(user.firstName) &&
-                lastName.equals(user.lastName) &&
-                email.equals(user.email) &&
-                username.equals(user.username) &&
-                password.equals(user.password) &&
-                roles.equals(user.roles) &&
-                userImageUrl.equals(user.userImageUrl) &&
-                created.equals(user.created) &&
-                modified.equals(user.modified) &&
-                Objects.equals(comments, user.comments);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, username, password, active, roles, userImageUrl, created, modified, comments);
-    }*/
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CommentsJpaRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByApproved(boolean approved);
+    List<Comment> findAllByMovieId(Long movieId);
 }

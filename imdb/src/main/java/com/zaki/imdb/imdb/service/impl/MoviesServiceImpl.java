@@ -75,4 +75,9 @@ public class MoviesServiceImpl implements MoviesService {
     public List<Movie> getAllMovies() {
         return moviesJpaRepository.findAll();
     }
+
+    @Override
+    public List<Movie> getMoviesByGenre(Long id) {
+        return moviesJpaRepository.findAllByGenres(id);
+    }
 }

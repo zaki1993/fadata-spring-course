@@ -1,6 +1,8 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -15,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-@JsonIgnoreProperties({"approved"})
+@JsonIgnoreProperties({"approved", "movie"})
 public class Comment {
 
     @Id
@@ -26,6 +29,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Movie.class, optional = false)
     @JoinColumn(name = "MOVIE_ID", nullable = false, updatable = false, referencedColumnName = "ID")
     @NonNull
+    @ToString.Exclude
     private Movie movie;
 
     @ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.EAGER)
@@ -45,4 +49,19 @@ public class Comment {
 
     @PastOrPresent
     private LocalDateTime modified = LocalDateTime.now();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id.equals(comment.id) &&
+                content.equals(comment.content) &&
+                created.equals(comment.created);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, created);
+    }
 }

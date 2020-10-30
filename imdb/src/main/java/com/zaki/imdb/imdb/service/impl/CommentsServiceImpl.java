@@ -39,10 +39,7 @@ public class CommentsServiceImpl implements CommentsService {
         if (!result.getCreated().equals(comment.getCreated())) {
             throw newInvalidEntityDataExceptionFromService(this, "created", result.getCreated());
         }
-        if (!result.getMovie().equals(comment.getMovie())) {
-            throw newInvalidEntityDataExceptionFromService(this, "movie", result.getMovie());
-        }
-        if (!result.getAuthor().equals(comment.getAuthor())) {
+        if (!result.getAuthor().getId().equals(comment.getAuthor().getId())) {
             throw newInvalidEntityDataExceptionFromService(this, "author", result.getAuthor().getId());
         }
         if (!canBeApproved) {
@@ -67,9 +64,6 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public Comment createComment(Comment comment) {
-        // Check whether the comment movie is existing
-        moviesService.getMovieById(comment.getMovie().getId());
-
         comment.setId(null);
         Comment result = null;
         try {
@@ -79,5 +73,10 @@ public class CommentsServiceImpl implements CommentsService {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Comment> getMovieComments(Long movieId) {
+        return commentsJpaRepository.findAllByMovieId(movieId);
     }
 }

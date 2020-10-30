@@ -1,5 +1,7 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -35,19 +37,7 @@ public class Genre {
     private String description;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "genres")
+    @ToString.Exclude
+    @JsonIgnore
     private Set<Movie> movies = new HashSet<>();
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Genre genre = (Genre) o;
-        return id.equals(genre.id) &&
-                name.equals(genre.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
 }

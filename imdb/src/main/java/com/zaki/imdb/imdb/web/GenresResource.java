@@ -1,20 +1,23 @@
 package com.zaki.imdb.imdb.web;
 
+import com.zaki.imdb.imdb.model.dto.GenreDTO;
+import com.zaki.imdb.imdb.model.dto.MovieDTO;
 import com.zaki.imdb.imdb.model.entity.Genre;
-import com.zaki.imdb.imdb.model.entity.Movie;
 import com.zaki.imdb.imdb.service.GenresService;
+import com.zaki.imdb.imdb.service.MoviesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import springfox.documentation.swagger2.mappers.ModelMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
@@ -26,23 +29,24 @@ public class GenresResource {
     private GenresService genresService;
 
     @Autowired
-    ModelMapper mapper;
+    private MoviesService moviesService;
 
-    // TODO Genre Model mapper
+    @Autowired
+    private ModelMapper mapper;
 
     @GetMapping
-    public List<Genre> getAllCategories() {
-        return genresService.getAllGenres();
+    public List<GenreDTO> getAllCategories() {
+        return genresService.getAllGenres().stream().map(genre -> mapper.map(genre, GenreDTO.class)).collect(Collectors.toList());
     }
 
     @GetMapping("{name}")
-    public Genre getGenreByName(@PathVariable String name) {
-        return genresService.getGenreByName(name);
+    public GenreDTO getGenreByName(@PathVariable String name) {
+        return mapper.map(genresService.getGenreByName(name), GenreDTO.class);
     }
 
     @PostMapping
-    public ResponseEntity<Genre> createGenre(@RequestBody Genre genre, HttpServletRequest request) {
-        Genre created = genresService.createGenre(genre);
+    public ResponseEntity<GenreDTO> createGenre(@RequestBody Genre genre, HttpServletRequest request) {
+        GenreDTO created = mapper.map(genresService.createGenre(genre), GenreDTO.class);
         return ResponseEntity.created(
                 MvcUriComponentsBuilder.fromMethodCall(on(GenresResource.class).createGenre(genre, request))
                         .pathSegment("{id}").build(created.getId())
@@ -50,32 +54,18 @@ public class GenresResource {
     }
 
     @PutMapping("{id}")
-    public Genre updateGenre(@PathVariable Long id, @Valid @RequestBody Genre genre, Errors errors) {
+    public GenreDTO updateGenre(@PathVariable Long id, @Valid @RequestBody Genre genre, Errors errors) {
         ExceptionUtils.onResourceEntryValidation(errors, id, genre.getId());
-        return genresService.updateGenre(genre);
+        return mapper.map(genresService.updateGenre(genre), GenreDTO.class);
     }
 
     @DeleteMapping("{name}")
-    public Genre deleteGenre(@PathVariable String name) {
-        return genresService.deleteGenre(name);
+    public GenreDTO deleteGenre(@PathVariable String name) {
+        return mapper.map(genresService.deleteGenre(name), GenreDTO.class);
     }
 
     @GetMapping("{name}/movies")
-    public Set<Movie> getAllMoviesInGenre(@PathVariable String name) {
-        return getGenreByName(name).getMovies();
+    public Set<MovieDTO> getAllMoviesInGenre(@PathVariable String name) {
+        return moviesService.getMoviesByGenre(getGenreByName(name).getId()).stream().map(movie -> mapper.map(movie, MovieDTO.class)).collect(Collectors.toSet());
     }
-
-    /*
-    private UserDTO convertToDto(User user) {
-        UserDTO userDto = mapper.map(user, UserDTO.class);
-        //... setOtherProps
-        return userDto;
-    }
-
-    private User convertToEntity(UserDTO userDto) {
-        User user = mapper.map(userDto, User.class);
-        //...
-        return user;
-    }*/
-
 }

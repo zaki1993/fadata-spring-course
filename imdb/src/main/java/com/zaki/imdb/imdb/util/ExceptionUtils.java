@@ -67,9 +67,9 @@ public final class ExceptionUtils {
         if (errors != null && errors.hasErrors()) {
             throw new ValidationErrorsException(errors);
         }
-        if (!movie.equals(comment.getMovie())) {
+        /*if (!movie.equals(comment.getMovie())) {
             throw new ResourceEntityDataException(String.format("Movie with id=%d does not have comment with id=%d", movie.getId(), comment.getId()));
-        }
+        }*/
     }
 
     public static void onResourceEntryGenreMovieValidation(Errors errors, Genre genre, Movie movie) {

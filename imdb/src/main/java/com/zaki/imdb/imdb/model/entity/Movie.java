@@ -1,6 +1,9 @@
 package com.zaki.imdb.imdb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -18,7 +21,6 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-@JsonIgnoreProperties({"comments"})
 public class Movie {
 
     @Id
@@ -33,7 +35,6 @@ public class Movie {
     private Set<Genre> genres = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "movie", targetEntity = Comment.class)
-    @ToString.Exclude
     private List<Comment> comments = new ArrayList<>();
 
     @NotNull
@@ -59,7 +60,7 @@ public class Movie {
 
     @PositiveOrZero
     private Double rating = 0d;
-/*
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,14 +69,11 @@ public class Movie {
         return id.equals(movie.id) &&
                 name.equals(movie.name) &&
                 description.equals(movie.description) &&
-                trailerURL.equals(movie.trailerURL) &&
-                created.equals(movie.created) &&
-                modified.equals(movie.modified) &&
-                rating.equals(movie.rating);
+                created.equals(movie.created);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, trailerURL, created, modified, rating);
-    }*/
+        return Objects.hash(id, name, description, created);
+    }
 }

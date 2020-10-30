@@ -19,4 +19,6 @@ public interface CommentsService extends EntityService {
     List<Comment> getUnapprovedComments();
 
     Comment createComment(Comment comment);
+
+    List<Comment> getMovieComments(Long movieId);
 }

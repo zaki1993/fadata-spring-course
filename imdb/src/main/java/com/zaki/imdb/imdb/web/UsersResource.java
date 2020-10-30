@@ -1,18 +1,20 @@
 package com.zaki.imdb.imdb.web;
 
+import com.zaki.imdb.imdb.model.dto.UserDTO;
 import com.zaki.imdb.imdb.model.entity.User;
 import com.zaki.imdb.imdb.service.UsersService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
-import springfox.documentation.swagger2.mappers.ModelMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
@@ -28,18 +30,18 @@ public class UsersResource {
     // TODO user Model mapper
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return usersService.getAllUsers();
+    public List<UserDTO> getAllUsers() {
+        return usersService.getAllUsers().stream().map(user -> mapper.map(user, UserDTO.class)).collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
-    public User getUserById(@PathVariable long id) {
-        return usersService.getUserById(id);
+    public UserDTO getUserById(@PathVariable long id) {
+        return mapper.map(usersService.getUserById(id), UserDTO.class);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> createUser(@RequestBody User user, HttpServletRequest request) {
-        User created = usersService.createUser(user);
+    public ResponseEntity<UserDTO> createUser(@RequestBody User user, HttpServletRequest request) {
+        UserDTO created = mapper.map(usersService.createUser(user), UserDTO.class);
         return ResponseEntity.created(
                 MvcUriComponentsBuilder.fromMethodCall(on(UsersResource.class).createUser(user, request))
                         .pathSegment("{id}").build(created.getId())
@@ -47,26 +49,13 @@ public class UsersResource {
     }
 
     @PutMapping("{id}")
-    public User updateUser(@PathVariable Long id, @Valid @RequestBody User user, Errors errors) {
+    public UserDTO updateUser(@PathVariable Long id, @Valid @RequestBody User user, Errors errors) {
         ExceptionUtils.onResourceEntryValidation(errors, id, user.getId());
-        return usersService.updateUser(user);
+        return mapper.map(usersService.updateUser(user), UserDTO.class);
     }
 
     @DeleteMapping("{id}")
-    public User deleteUser(@PathVariable long id) {
-        return usersService.deleteUser(id);
+    public UserDTO deleteUser(@PathVariable long id) {
+        return mapper.map(usersService.deleteUser(id), UserDTO.class);
     }
-    /*
-    private UserDTO convertToDto(User user) {
-        UserDTO userDto = mapper.map(user, UserDTO.class);
-        //... setOtherProps
-        return userDto;
-    }
-
-    private User convertToEntity(UserDTO userDto) {
-        User user = mapper.map(userDto, User.class);
-        //...
-        return user;
-    }*/
-
 }
