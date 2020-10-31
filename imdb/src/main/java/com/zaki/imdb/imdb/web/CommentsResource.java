@@ -60,7 +60,7 @@ public class CommentsResource {
         return mapper.map(commentsService.updateComment(comment, true), CommentDTO.class);
     }
 
-    @PutMapping("{commentId}/unapprove")
+    @PutMapping("{commentId}/disapprove")
     public CommentDTO unapproveComment(@PathVariable Long commentId, @Valid @RequestBody Comment comment, Errors errors) {
         ExceptionUtils.onResourceEntryValidation(errors, commentId, comment.getId());
         comment.setApproved(false);
