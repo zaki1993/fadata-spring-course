@@ -56,6 +56,14 @@ public class CommentsResource {
     @PutMapping("{commentId}/approve")
     public CommentDTO approveComment(@PathVariable Long commentId, @Valid @RequestBody Comment comment, Errors errors) {
         ExceptionUtils.onResourceEntryValidation(errors, commentId, comment.getId());
+        comment.setApproved(true);
+        return mapper.map(commentsService.updateComment(comment, true), CommentDTO.class);
+    }
+
+    @PutMapping("{commentId}/unapprove")
+    public CommentDTO unapproveComment(@PathVariable Long commentId, @Valid @RequestBody Comment comment, Errors errors) {
+        ExceptionUtils.onResourceEntryValidation(errors, commentId, comment.getId());
+        comment.setApproved(false);
         return mapper.map(commentsService.updateComment(comment, true), CommentDTO.class);
     }
 

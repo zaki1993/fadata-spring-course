@@ -1,5 +1,6 @@
 package com.zaki.imdb.imdb.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.zaki.imdb.imdb.model.entity.Comment;
 import com.zaki.imdb.imdb.model.entity.Genre;
 import lombok.*;
@@ -20,6 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonIgnoreProperties({"comments"})
 public class MovieDTO {
     private Long id;
 
