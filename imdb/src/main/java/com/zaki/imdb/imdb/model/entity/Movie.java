@@ -85,6 +85,6 @@ public class Movie {
         if (rates == null || rates.isEmpty()) {
             return 0d;
         }
-        return rates.stream().map(Rate::getRating).reduce(0d, Double::sum);
+        return rates.stream().map(Rate::getRating).reduce(0d, Double::sum) / rates.size();
     }
 }

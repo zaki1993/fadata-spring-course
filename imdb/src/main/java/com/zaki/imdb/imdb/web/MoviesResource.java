@@ -69,6 +69,9 @@ public class MoviesResource {
         return commentsService.getMovieComments(movieId).stream().map(comment -> mapper.map(comment, CommentDTO.class)).collect(Collectors.toList());
     }
 
- /*   @PostMapping("{movieId}/rate")
-    public Rate */
+    @PostMapping("{movieId}/rate")
+    public Rate rateMovie(@PathVariable Long movieId, @Valid @RequestBody Rate rate) {
+        ExceptionUtils.onResourceEntryValidation(null, movieId, rate.getMovie().getId());
+        return moviesService.rateMovie(rate);
+    }
 }

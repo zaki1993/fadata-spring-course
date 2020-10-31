@@ -1,8 +1,8 @@
 package com.zaki.imdb.imdb.service;
 
 import com.zaki.imdb.imdb.model.entity.Movie;
+import com.zaki.imdb.imdb.model.entity.Rate;
 
-import java.util.Arrays;
 import java.util.List;
 
 public interface MoviesService extends EntityService {
@@ -22,4 +22,6 @@ public interface MoviesService extends EntityService {
     List<Movie> getAllMovies();
 
     List<Movie> getMoviesByGenre(Long id);
+
+    Rate rateMovie(Rate rate);
 }

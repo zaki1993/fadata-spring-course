@@ -1,9 +1,9 @@
 package com.zaki.imdb.imdb.service.impl;
 
 import com.zaki.imdb.imdb.dao.MoviesJpaRepository;
-import com.zaki.imdb.imdb.exception.ResourceEntityDataException;
-import com.zaki.imdb.imdb.model.entity.Genre;
+import com.zaki.imdb.imdb.dao.RateJpaRepository;
 import com.zaki.imdb.imdb.model.entity.Movie;
+import com.zaki.imdb.imdb.model.entity.Rate;
 import com.zaki.imdb.imdb.service.CommentsService;
 import com.zaki.imdb.imdb.service.GenresService;
 import com.zaki.imdb.imdb.service.MoviesService;
@@ -29,6 +29,9 @@ public class MoviesServiceImpl implements MoviesService {
 
     @Autowired
     private MoviesJpaRepository moviesJpaRepository;
+
+    @Autowired
+    private RateJpaRepository rateJpaRepository;
 
     @Autowired
     private GenresService genresService;
@@ -79,5 +82,17 @@ public class MoviesServiceImpl implements MoviesService {
     @Override
     public List<Movie> getMoviesByGenre(Long id) {
         return moviesJpaRepository.findAllByGenres(id);
+    }
+
+    @Override
+    public Rate rateMovie(Rate rate) {
+        // Check if the same user already rated the movie, in that case do an update on the rating of the user
+        Rate oldRate = rateJpaRepository.findByMovieIdAndUserId(rate.getMovie().getId(), rate.getUser().getId());
+        if (oldRate != null) {
+            oldRate.setRating(rate.getRating());
+            rate = oldRate;
+        }
+
+        return rateJpaRepository.save(rate);
     }
 }
