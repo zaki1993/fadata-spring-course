@@ -4,6 +4,7 @@ import com.zaki.imdb.imdb.dao.UsersJpaRepository;
 import com.zaki.imdb.imdb.exception.EntityAlreadyExistsException;
 import com.zaki.imdb.imdb.exception.InvalidEntityDataException;
 import com.zaki.imdb.imdb.exception.NonExistingEntityException;
+import com.zaki.imdb.imdb.model.UserRole;
 import com.zaki.imdb.imdb.model.entity.User;
 import com.zaki.imdb.imdb.service.UsersService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 
 import static com.zaki.imdb.imdb.util.ExceptionUtils.*;
 
@@ -79,6 +81,8 @@ public class UsersServiceImpl implements UsersService {
         }
 
         user.setId(null);
+        // Reset any user role. Administrators can only be added from db.
+        user.setRoles(Set.of(UserRole.REGISTERED));
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User result = null;
