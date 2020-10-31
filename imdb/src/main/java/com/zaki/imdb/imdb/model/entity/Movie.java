@@ -1,19 +1,19 @@
 package com.zaki.imdb.imdb.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
 @Data
 @Entity
@@ -21,7 +21,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-@JsonIgnoreProperties({"comments"})
+@JsonIgnoreProperties({"comments", "rates"})
 public class Movie {
 
     @Id
@@ -35,8 +35,14 @@ public class Movie {
             inverseJoinColumns = {@JoinColumn(name = "genre_id")})
     private Set<Genre> genres = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "movie", targetEntity = Comment.class)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "movie", targetEntity = Comment.class)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "movie", targetEntity = Rate.class)
+    private List<Rate> rates = new ArrayList<>();
+
+    @JsonProperty(access = READ_ONLY)
+    private Double rating;
 
     @NotNull
     @NonNull
@@ -59,9 +65,6 @@ public class Movie {
     @PastOrPresent
     private LocalDateTime modified = LocalDateTime.now();
 
-    @PositiveOrZero
-    private Double rating = 0d;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,5 +79,12 @@ public class Movie {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, description, created);
+    }
+
+    public Double getRating() {
+        if (rates == null || rates.isEmpty()) {
+            return 0d;
+        }
+        return rates.stream().map(Rate::getRating).reduce(0d, Double::sum);
     }
 }

@@ -3,6 +3,7 @@ package com.zaki.imdb.imdb.web;
 import com.zaki.imdb.imdb.model.dto.CommentDTO;
 import com.zaki.imdb.imdb.model.dto.MovieDTO;
 import com.zaki.imdb.imdb.model.entity.Movie;
+import com.zaki.imdb.imdb.model.entity.Rate;
 import com.zaki.imdb.imdb.service.CommentsService;
 import com.zaki.imdb.imdb.service.MoviesService;
 import com.zaki.imdb.imdb.util.ExceptionUtils;
@@ -67,4 +68,7 @@ public class MoviesResource {
     public List<CommentDTO> getMovieComments(@PathVariable Long movieId) {
         return commentsService.getMovieComments(movieId).stream().map(comment -> mapper.map(comment, CommentDTO.class)).collect(Collectors.toList());
     }
+
+ /*   @PostMapping("{movieId}/rate")
+    public Rate */
 }

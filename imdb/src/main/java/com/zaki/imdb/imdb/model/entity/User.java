@@ -27,7 +27,7 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"comments", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
+@JsonIgnoreProperties({"comments", "rates", "authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
 public class User implements UserDetails {
 
     private static final UserRole DEFAULT_USER_ROLE = UserRole.ANONYMOUS;
@@ -91,6 +91,9 @@ public class User implements UserDetails {
     @ToString.Exclude
     @Fetch(value = FetchMode.SELECT)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", targetEntity = Rate.class)
+    private List<Rate> rates = new ArrayList<>();
 
     public User(@NonNull @NotNull @Size(min = 2, max = 50) String firstName, @NonNull @NotNull @Size(min = 2, max = 50) String lastName, @NonNull @NotNull @Email String email, @NonNull @NotNull @Size(min = 5, max = 30) String username, @NonNull @NotNull @Size(min = 5, max = 30) String password, Set<UserRole> roles, @URL String userImageUrl) {
         this.firstName = firstName;
