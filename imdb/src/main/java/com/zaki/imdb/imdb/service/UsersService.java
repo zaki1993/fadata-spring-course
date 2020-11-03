@@ -1,8 +1,5 @@
 package com.zaki.imdb.imdb.service;
 
-import com.zaki.imdb.imdb.exception.EntityAlreadyExistsException;
-import com.zaki.imdb.imdb.exception.InvalidEntityDataException;
-import com.zaki.imdb.imdb.exception.NonExistingEntityException;
 import com.zaki.imdb.imdb.model.entity.User;
 
 import java.util.List;
@@ -18,7 +15,7 @@ public interface UsersService extends EntityService {
 
     User createUser(User user);
 
-    User updateUser(User user);
+    User updateUser(User user, boolean modifyRoles);
 
     User deleteUser(Long id);
 

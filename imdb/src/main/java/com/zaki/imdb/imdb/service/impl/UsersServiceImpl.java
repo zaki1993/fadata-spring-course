@@ -96,7 +96,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public User updateUser(User user) throws NonExistingEntityException, InvalidEntityDataException {
+    public User updateUser(User user, boolean modifyRoles) throws NonExistingEntityException, InvalidEntityDataException {
         User result = usersJpaRepository.findById(user.getId()).orElseThrow(
                 () -> newNonExistingEntityExceptionFromService(this, "id", user.getId()));
         if (!result.getEmail().equals(user.getEmail())) {
@@ -108,6 +108,12 @@ public class UsersServiceImpl implements UsersService {
         if (!result.getCreated().equals(user.getCreated())) {
             throw newInvalidEntityDataExceptionFromService(this, "creation date", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(result.getCreated()));
         }
+        // Do not update roles if the flag modifyRoles is set to false
+        if (!modifyRoles) {
+            user.setRoles(result.getRoles());
+        }
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setModified(LocalDateTime.now());
         return usersJpaRepository.save(user);
     }

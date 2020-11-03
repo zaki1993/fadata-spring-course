@@ -51,7 +51,13 @@ public class UsersResource {
     @PutMapping("{id}")
     public UserDTO updateUser(@PathVariable Long id, @Valid @RequestBody User user, Errors errors) {
         ExceptionUtils.onResourceEntryValidation(errors, id, user.getId());
-        return mapper.map(usersService.updateUser(user), UserDTO.class);
+        return mapper.map(usersService.updateUser(user, false), UserDTO.class);
+    }
+
+    @PutMapping("{id}/promote")
+    public UserDTO promoteUser(@PathVariable Long id, @Valid @RequestBody User user, Errors errors) {
+        ExceptionUtils.onResourceEntryValidation(errors, id, user.getId());
+        return mapper.map(usersService.updateUser(user, true), UserDTO.class);
     }
 
     @DeleteMapping("{id}")
