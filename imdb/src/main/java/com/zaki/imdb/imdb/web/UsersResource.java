@@ -1,5 +1,6 @@
 package com.zaki.imdb.imdb.web;
 
+import com.zaki.imdb.imdb.model.dto.UserAdminDTO;
 import com.zaki.imdb.imdb.model.dto.UserDTO;
 import com.zaki.imdb.imdb.model.entity.User;
 import com.zaki.imdb.imdb.service.UsersService;
@@ -27,11 +28,9 @@ public class UsersResource {
     @Autowired
     private ModelMapper mapper;
 
-    // TODO user Model mapper
-
     @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return usersService.getAllUsers().stream().map(user -> mapper.map(user, UserDTO.class)).collect(Collectors.toList());
+    public List<UserAdminDTO> getAllUsers() {
+        return usersService.getAllUsers().stream().map(user -> mapper.map(user, UserAdminDTO.class)).collect(Collectors.toList());
     }
 
     @GetMapping("{id}")

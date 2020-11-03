@@ -1,5 +1,6 @@
 package com.zaki.imdb.imdb.service.impl;
 
+import com.zaki.imdb.imdb.dao.GenresJpaRepository;
 import com.zaki.imdb.imdb.dao.MoviesJpaRepository;
 import com.zaki.imdb.imdb.dao.RateJpaRepository;
 import com.zaki.imdb.imdb.model.entity.Movie;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.zaki.imdb.imdb.util.ExceptionUtils.newInvalidEntityDataExceptionFromService;
 import static com.zaki.imdb.imdb.util.ExceptionUtils.newNonExistingEntityExceptionFromService;
@@ -32,6 +34,9 @@ public class MoviesServiceImpl implements MoviesService {
 
     @Autowired
     private RateJpaRepository rateJpaRepository;
+
+    @Autowired
+    private GenresJpaRepository genresJpaRepository;
 
     @Autowired
     private GenresService genresService;
@@ -80,8 +85,8 @@ public class MoviesServiceImpl implements MoviesService {
     }
 
     @Override
-    public List<Movie> getMoviesByGenre(Long id) {
-        return moviesJpaRepository.findAllByGenres(id);
+    public Set<Movie> getMoviesByGenre(Long id) {
+        return genresJpaRepository.findById(id).orElseThrow(() -> ExceptionUtils.newNonExistingEntityExceptionFromService(this, "id", id)).getMovies();
     }
 
     @Override

@@ -11,6 +11,8 @@ import com.zaki.imdb.imdb.util.ExceptionUtils;
 import com.zaki.imdb.imdb.util.IMDBUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,8 +41,20 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public User getUserById(Long id) throws NonExistingEntityException {
-        return usersJpaRepository.findById(id)
+        User user = usersJpaRepository.findById(id)
                 .orElseThrow(() -> newNonExistingEntityExceptionFromService(this, "id", id));
+        validateLoggedInUser(user);
+
+        return user;
+    }
+
+    private void validateLoggedInUser(User user) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUsername = ((User) auth.getPrincipal()).getUsername();
+
+        if (!user.getUsername().equals(loggedInUsername)) {
+            throw newNonExistingEntityExceptionFromService(this, "id", user.getId());
+        }
     }
 
     @Override
@@ -96,9 +110,15 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public User updateUser(User user, boolean modifyRoles) throws NonExistingEntityException, InvalidEntityDataException {
+    public User updateUser(User user, boolean isAdmin) throws NonExistingEntityException, InvalidEntityDataException {
+
         User result = usersJpaRepository.findById(user.getId()).orElseThrow(
                 () -> newNonExistingEntityExceptionFromService(this, "id", user.getId()));
+
+        if (!isAdmin) {
+            validateLoggedInUser(result);
+        }
+
         if (!result.getEmail().equals(user.getEmail())) {
             throw newInvalidEntityDataExceptionFromService(this, "email", result.getEmail());
         }
@@ -109,7 +129,7 @@ public class UsersServiceImpl implements UsersService {
             throw newInvalidEntityDataExceptionFromService(this, "creation date", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(result.getCreated()));
         }
         // Do not update roles if the flag modifyRoles is set to false
-        if (!modifyRoles) {
+        if (!isAdmin) {
             user.setRoles(result.getRoles());
         }
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

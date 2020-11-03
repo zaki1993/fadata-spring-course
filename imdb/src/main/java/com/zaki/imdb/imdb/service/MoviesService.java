@@ -4,6 +4,7 @@ import com.zaki.imdb.imdb.model.entity.Movie;
 import com.zaki.imdb.imdb.model.entity.Rate;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MoviesService extends EntityService {
     @Override
@@ -21,7 +22,7 @@ public interface MoviesService extends EntityService {
 
     List<Movie> getAllMovies();
 
-    List<Movie> getMoviesByGenre(Long id);
+    Set<Movie> getMoviesByGenre(Long id);
 
     Rate rateMovie(Rate rate);
 }

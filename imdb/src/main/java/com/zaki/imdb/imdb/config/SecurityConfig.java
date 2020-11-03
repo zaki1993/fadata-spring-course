@@ -34,10 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/imdb/users/register").permitAll()
 // Comments access. Everyone can view comments, but only REGISTERED, MODERATOR and ADMINISTRATOR users can POST, PUT and DELETE such. ADMINISTRATOR and MODERATOR can approve or disapprove comments.
                 .antMatchers(HttpMethod.GET, "/imdb/comments/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/imdb/comments/*/approve", "/imdb/comments/*/disapprove").hasAnyRole("ADMINISTRATOR", "MODERATOR")
                 .antMatchers(HttpMethod.POST, "/imdb/comments/**").hasAnyRole("ADMINISTRATOR", "MODERATOR", "REGISTERED")
                 .antMatchers(HttpMethod.PUT, "/imdb/comments/**").hasAnyRole("ADMINISTRATOR", "MODERATOR", "REGISTERED")
                 .antMatchers(HttpMethod.DELETE, "/imdb/comments/**").hasAnyRole("ADMINISTRATOR", "MODERATOR", "REGISTERED")
-                .antMatchers(HttpMethod.POST, "/imdb/comments/**/approve", "/imdb/comments/**/disapprove").hasAnyRole("ADMINISTRATOR", "MODERATOR")
 // Rate access. Only REGISTERED, MODERATOR and ADMINISTRATOR users can rate a movie.
                 .antMatchers(HttpMethod.POST, "/imdb/movies/**/rate").hasAnyRole("ADMINISTRATOR", "MODERATOR", "REGISTERED")
 // Additional access

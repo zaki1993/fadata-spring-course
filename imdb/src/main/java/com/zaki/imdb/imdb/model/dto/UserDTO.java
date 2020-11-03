@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import com.zaki.imdb.imdb.model.UserRole;
 import com.zaki.imdb.imdb.model.entity.Comment;
+import com.zaki.imdb.imdb.model.entity.Rate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -72,6 +73,8 @@ public class UserDTO implements UserDetails {
     @NonNull
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<UserRole> roles = Set.of(DEFAULT_USER_ROLE);
+
+    private List<Rate> rates = new ArrayList<>();
 
     @URL
     @Column(name = "USER_IMAGE_URL")
