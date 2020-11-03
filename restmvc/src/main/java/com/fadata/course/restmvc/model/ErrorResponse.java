@@ -1,1 +1,0 @@
-package com.fadata.course.restmvc.model.error;import lombok.*;import javax.validation.ConstraintViolation;import java.util.List;@Data@NoArgsConstructor@RequiredArgsConstructor@AllArgsConstructorpublic class ErrorResponse {    @NonNull    private int code;    @NonNull    private String message;    private List<ConstraintViolation> validationErrors;}
