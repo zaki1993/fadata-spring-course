@@ -39,7 +39,6 @@ public class Rate {
 
     @NonNull
     @NotNull
-    @Positive
     @Min(value = 1)
     @Max(value = 10)
     private Double rating;

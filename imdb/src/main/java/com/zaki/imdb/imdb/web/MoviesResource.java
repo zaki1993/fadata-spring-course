@@ -2,6 +2,7 @@ package com.zaki.imdb.imdb.web;
 
 import com.zaki.imdb.imdb.model.dto.CommentDTO;
 import com.zaki.imdb.imdb.model.dto.MovieDTO;
+import com.zaki.imdb.imdb.model.dto.RateDTO;
 import com.zaki.imdb.imdb.model.entity.Movie;
 import com.zaki.imdb.imdb.model.entity.Rate;
 import com.zaki.imdb.imdb.service.CommentsService;
@@ -70,8 +71,8 @@ public class MoviesResource {
     }
 
     @PostMapping("{movieId}/rate")
-    public Rate rateMovie(@PathVariable Long movieId, @Valid @RequestBody Rate rate) {
-        ExceptionUtils.onResourceEntryValidation(null, movieId, rate.getMovie().getId());
-        return moviesService.rateMovie(rate);
+    public RateDTO rateMovie(@PathVariable Long movieId, @Valid @RequestBody Rate rate, Errors errors) {
+        ExceptionUtils.onResourceEntryValidation(errors, movieId, rate.getMovie().getId());
+        return mapper.map(moviesService.rateMovie(rate), RateDTO.class);
     }
 }
